@@ -25,39 +25,36 @@ License: GPL2
 
 */
 
-require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
 
 function bookcomplaints_db_create(){
     global $wpdb;
-    $table_claims = $wpdb->prefix.'reclamo';
-    $table_document = $wpdb->prefix.'tipo_documento';
+
+    $table_document = $wpdb->prefix.'documento';
     $table_area = $wpdb->prefix.'area';
+    $table_claims = $wpdb->prefix.'reclamo';
 
-    $sql_document = "CREATE TABLE $table_document(
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table_document(
           id_tipo INT NOT NULL AUTO_INCREMENT,
-          nombre VARCHAR(45) NOT NULL DEFAULT '',
-          PRIMARY KEY (id_tipo)
-        );
+          nombre VARCHAR(45) NULL,
+          UNIQUE KEY (id_tipo));
     ";
 
-    dbDelta($sql_document);
-
-    $sql_area = "CREATE TABLE $table_area(
-          id_area INT NOT NULL AUTO_INCREMENT,
-          nombre VARCHAR(45) NOT NULL DEFAULT '',
-          PRIMARY KEY (id_area)
-        );
+    $sql.= "CREATE TABLE $table_area(
+        id_area INT NOT NULL AUTO_INCREMENT,
+        nombre VARCHAR(45) NULL,
+        UNIQUE KEY (id_area));
     ";
 
-    dbDelta($sql_area);
-
-    $sql_claims = "
+    $sql.= "
         CREATE TABLE $table_claims(
-          id_reclamo int(10) NOT NULL AUTO_INCREMENT,
+          id_reclamo INT NOT NULL AUTO_INCREMENT,
           nombres VARCHAR(255) NULL DEFAULT '',
           apaterno VARCHAR(255) NULL DEFAULT '',
           amaterno VARCHAR(255) NULL DEFAULT '',
-          tipo_documento INT NOT NULL DEFAULT '',
+          tipo_documento INT NOT NULL,
           num_documento VARCHAR(45) NULL DEFAULT '',
           email VARCHAR(255) NULL DEFAULT '',
           telefono VARCHAR(45) NULL DEFAULT '',
@@ -65,27 +62,18 @@ function bookcomplaints_db_create(){
           departamento INT NULL,
           provincia INT NULL,
           distrito INT NULL,
-          direccion VARCHAR(45) NULL,
+          direccion TEXT NULL DEFAULT '',
           area INT NOT NULL,
-          asunto VARCHAR(255) NULL,
-          descripcion VARCHAR(255) NULL,
-          medio_respuesta INT NULL,
-          estado INT NULL,
-          PRIMARY KEY (id_reclamo),
-          CONSTRAINT fk_reclamos_1
-          FOREIGN KEY (tipo_documento)
-            REFERENCES $table_document (id_tipo)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
-          CONSTRAINT fk_reclamos_2
-            FOREIGN KEY (area)
-            REFERENCES $table_area (id_area)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-        )
+          asunto TINYTEXT NULL DEFAULT '',
+          descripcion TEXT NULL DEFAULT '',
+          medio_respuesta INT NOT NULL,
+          estado INT NOT NULL,
+          PRIMARY KEY (id_reclamo));
     ";
 
-    dbDelta($sql_claims);
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+    dbDelta($sql);
 }
 
 function bookcomplaints_db_remove(){
@@ -102,4 +90,4 @@ function bookcomplaints_db_remove(){
 }
 
 register_activation_hook( __FILE__, 'bookcomplaints_db_create' );
-register_deactivation_hook(__FILE__,'bookcomplaints_db_remove');
+//register_deactivation_hook(__FILE__,'bookcomplaints_db_remove');
