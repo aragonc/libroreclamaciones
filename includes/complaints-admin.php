@@ -18,6 +18,15 @@ function bookcomplaints_panel_menu(){
         'dashicons-media-spreadsheet'
     );
 
+    add_submenu_page(
+        'complaints_options',
+        __('Áreas de reclamos'),
+        __('Áreas'),
+        'activate_plugins',
+        'areas_complaints',
+        'bookcomplaints_panel_area'
+    );
+
     // Add menu link to the admin bar
     function bookcomplaints_add_admin_menu() {
         global $wp_admin_bar;
@@ -30,6 +39,15 @@ function bookcomplaints_panel_menu(){
     }
     add_action( 'wp_before_admin_bar_render', 'bookcomplaints_add_admin_menu' );
 
+}
+
+function bookcomplaints_panel_area(){
+    ?>
+
+    <div class="wrap">
+        <h2><?php _e('Agregar áreas'); ?></h2>
+    </div>
+    <?php
 }
 
 function bookcomplaints_panel_content(){
