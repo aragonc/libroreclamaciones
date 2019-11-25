@@ -29,6 +29,7 @@ License: GPL2
 include __DIR__.'/includes/complaints-init.php';
 include __DIR__.'/includes/complaints-admin.php';
 include __DIR__.'/includes/complaints-front.php';
+include __DIR__.'/ubigeo/departments.php';
 
 register_activation_hook( __FILE__, 'bookcomplaints_table_create' );
 register_activation_hook( __FILE__, 'bookcomplaints_add_tables' );

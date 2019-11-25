@@ -1,7 +1,11 @@
 <?php
 
 function complaintsForm(){
+
+    $list = getDepartments();
+
     ?>
+
     <main id="main" class="site-main" role="main">
         <div class="container">
             <form>
@@ -15,11 +19,10 @@ function complaintsForm(){
                     <label for="type_doc" class="col-sm-2 col-form-label">Tipo de documento</label>
                     <div class="col-sm-4">
                         <select class="form-control" name="type_doc" id="type_doc">
-                            <option></option>
-                            <option>DNI</option>
-                            <option>RUC</option>
-                            <option>Carnet de extranjeria</option>
-                            <option>Pasaporte</option>
+                            <option value="DNI">DNI</option>
+                            <option value="RUC">RUC</option>
+                            <option value="CE">Carnet de extranjeria</option>
+                            <option value="PASS">Pasaporte</option>
                         </select>
                     </div>
                     <label for="num_doc" class="col-sm-2 col-form-label">Número de documento</label>
@@ -47,31 +50,19 @@ function complaintsForm(){
                     <label for="client_departments" class="col-sm-2 col-form-label">Departamento</label>
                     <div class="col-sm-2">
                         <select class="form-control" name="client_departments" id="client_departments">
-                            <option></option>
-                            <option>DNI</option>
-                            <option>RUC</option>
-                            <option>Carnet de extranjeria</option>
-                            <option>Pasaporte</option>
+                            <?php foreach ($list as $item):
+                                echo '<option value="'.$item["id"].'">'.$item["name"].'</option>';
+                            endforeach; ?>
                         </select>
                     </div>
                     <label for="client_provinces" class="col-sm-1 col-form-label">Provincia</label>
                     <div class="col-sm-3">
-                        <select class="form-control" name="client_provinces" id="client_provinces">
-                            <option></option>
-                            <option>DNI</option>
-                            <option>RUC</option>
-                            <option>Carnet de extranjeria</option>
-                            <option>Pasaporte</option>
+                        <select class="form-control" name="client_provinces" id="client_provinces" disabled>
                         </select>
                     </div>
                     <label for="client_districts" class="col-sm-1 col-form-label">Distrito</label>
                     <div class="col-sm-3">
-                        <select class="form-control" name="client_districts" id="client_districts">
-                            <option></option>
-                            <option>DNI</option>
-                            <option>RUC</option>
-                            <option>Carnet de extranjeria</option>
-                            <option>Pasaporte</option>
+                        <select class="form-control" name="client_districts" id="client_districts" disabled>
                         </select>
                     </div>
                 </div>
@@ -140,5 +131,48 @@ function complaintsForm(){
             </form>
         </div>
     </main>
+    <script>
+        (function($) {
+            $('#client_departments').click(function(){
+                var provinces = $('#client_provinces');
+                var districts = $('#client_districts');
+                var idDepartament = $('#client_departments').val();
+                provinces.prop('disabled', false);
+                provinces.empty();
+                districts.empty();
+                districts.prop('disabled', true);
+                var urlProvinces = "<?php echo plugin_dir_url( __DIR__ ) ?>ubigeo/json/provinces.json";
+                $.getJSON(urlProvinces, function (data) {
+                    data.forEach(function(province, index) {
+                        if(province.department_id == idDepartament ){
+                            var content = '<option value="'+province.id+'">' + province.name + '</option>';
+                            provinces.append(content);
+                        }
+
+                    });
+                });
+            });
+
+
+            $('#client_provinces').click(function(){
+                var districts = $('#client_districts');
+                var idProvince = $('#client_provinces').val();
+                districts.prop('disabled', false);
+                districts.empty();
+                var urlDistricts = "<?php echo plugin_dir_url( __DIR__ ) ?>ubigeo/json/districts.json";
+                $.getJSON(urlDistricts, function (data) {
+                    data.forEach(function(district) {
+                        if(district.province_id == idProvince ){
+                            var content = '<option value="'+district.id+'">' + district.name + '</option>';
+                            districts.append(content);
+                        }
+
+                    });
+                });
+            });
+
+
+        })( jQuery );
+    </script>
     <?php
 }
