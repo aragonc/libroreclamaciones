@@ -84,11 +84,13 @@ function bookcomplaints_panel_area(){
     }
 
     if ( isset( $_POST['save'] ) ) {
-        if(empty($_POST['area'])){
+        if(empty($_POST['area']) && empty($_POST['code_short'])){
             $reg_errors->add('area_empty','El campo esta vacio');
         } else {
             $area = $_POST['area'];
+            $codeArea = strtoupper($_POST['code_short']);
             $wpdb->insert($table_name,array(
+                'code_area' => $codeArea,
                 'nombre' => $area
             ));
         }
@@ -114,14 +116,22 @@ function bookcomplaints_panel_area(){
             ?>
             <table class="form-table">
                 <tbody>
-                <tr class="form-field form-required">
-                    <th>
-                        <label>Nombre del área</label>
-                    </th>
-                    <th>
-                        <input name="area" type="text" id="namearea"  value="">
-                    </th>
-                </tr>
+                    <tr class="form-field form-required">
+                        <th>
+                            <label>Nombre del área</label>
+                        </th>
+                        <th>
+                            <input name="area" type="text" id="namearea"  value="">
+                        </th>
+                    </tr>
+                    <tr class="form-field form-required">
+                        <th>
+                            <label>Código corto</label>
+                        </th>
+                        <th>
+                            <input name="code_short" type="text" id="code_short"  value="">
+                        </th>
+                    </tr>
                 </tbody>
             </table>
             <input type="hidden" id="code_area" name="code_area" value="">
@@ -138,8 +148,9 @@ function bookcomplaints_panel_area(){
         <table class="wp-list-table widefat fixed striped">
             <thead>
                 <tr>
-                    <th><?php _e('Codigo'); ?></th>
-                    <th><?php _e('Nombre'); ?></th>
+                    <th><?php _e('ID'); ?></th>
+                    <th><?php _e('Código corto'); ?></th>
+                    <th><?php _e('Nombre del área'); ?></th>
                     <th><?php _e('Acciones'); ?></th>
                 </tr>
             </thead>
@@ -154,6 +165,9 @@ function bookcomplaints_panel_area(){
                     <tr>
                         <td>
                             <?php echo $item->id_area; ?>
+                        </td>
+                        <td>
+                            <span id="code_short_<?php echo $item->id_area; ?>" data-name="<?php echo $item->code_area; ?>"><?php echo $item->code_area; ?></span>
                         </td>
                         <td>
                             <span id="area_name_<?php echo $item->id_area; ?>" data-name="<?php echo $item->nombre; ?>"><?php echo $item->nombre; ?></span>
@@ -174,10 +188,13 @@ function bookcomplaints_panel_area(){
                 $('#save').prop('disabled', true);
                 var fieldID = $(this).attr('data-id');
                 var fieldName = $('#area_name_' + fieldID).attr('data-name');
-                console.log(fieldName);
+                var fieldCode = $('#code_short_' + fieldID).attr('data-name');
+                //console.log(fieldName);
                 $('#code_area').val(fieldID);
                 $('#namearea').val(fieldName);
-                $('#namearea').val(fieldName);
+                //$('#namearea').val(fieldName);
+                $('#code_short').val(fieldCode);
+                $('#code_short').prop('disabled', true);
             });
         })( jQuery );
     </script>

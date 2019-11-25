@@ -1,8 +1,17 @@
 <?php
 
+function getAreasList(){
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bc_area';
+    $list = $wpdb->get_results("SELECT * FROM " . $table_name . " ORDER BY id_area ASC");
+    return $list;
+}
+
+
 function complaintsForm(){
 
     $list = getDepartments();
+    $areas = getAreasList();
 
     ?>
 
@@ -19,6 +28,7 @@ function complaintsForm(){
                     <label for="type_doc" class="col-sm-2 col-form-label">Tipo de documento</label>
                     <div class="col-sm-4">
                         <select class="form-control" name="type_doc" id="type_doc">
+                            <option value="-1"></option>
                             <option value="DNI">DNI</option>
                             <option value="RUC">RUC</option>
                             <option value="CE">Carnet de extranjeria</option>
@@ -71,21 +81,20 @@ function complaintsForm(){
                     <label for="client_area" class="col-sm-2 col-form-label">Área de formación</label>
                     <div class="col-sm-4">
                         <select class="form-control" name="client_area" id="client_area">
-                            <option></option>
-                            <option>DNI</option>
-                            <option>RUC</option>
-                            <option>Carnet de extranjeria</option>
-                            <option>Pasaporte</option>
+                            <option value="-1"></option>
+                            <?php foreach ($areas as $item):
+                                echo '<option value="'.$item->code_area.'">'.$item->nombre.'</option>';
+                            endforeach; ?>
                         </select>
                     </div>
                     <label for="client_request" class="col-sm-2 col-form-label">Tipo de solicitud</label>
                     <div class="col-sm-4">
                         <select class="form-control" name="client_request" id="client_request">
-                            <option></option>
-                            <option>DNI</option>
-                            <option>RUC</option>
-                            <option>Carnet de extranjeria</option>
-                            <option>Pasaporte</option>
+                            <option value="-1"></option>
+                            <option value="1">Reclamo</option>
+                            <option value="2">Queja</option>
+                            <option value="3">Consulta</option>
+                            <option value="4">Sugerencia</option>
                         </select>
                     </div>
                 </div>
