@@ -28,6 +28,7 @@ License: GPL2
 
 include __DIR__.'/includes/complaints-init.php';
 include __DIR__.'/includes/complaints-admin.php';
+include __DIR__.'/includes/complaints-front.php';
 
 register_activation_hook( __FILE__, 'bookcomplaints_table_create' );
 register_activation_hook( __FILE__, 'bookcomplaints_add_tables' );
@@ -37,3 +38,41 @@ register_deactivation_hook(__FILE__,'bookcomplaints_table_remove');
 
 add_action( 'admin_menu', 'bookcomplaints_panel_menu' );
 
+/**
+ * Add "Custom" template to page attirbute template section.
+ */
+function bookcomplaints_add_template_to_select( $post_templates, $wp_theme, $post, $post_type ) {
+
+    // Add custom template named template-custom.php to select dropdown
+    $post_templates['template-custom.php'] = __('Libro reclamaciones');
+
+    return $post_templates;
+}
+
+add_filter( 'theme_page_templates', 'bookcomplaints_add_template_to_select', 10, 4 );
+
+
+/**
+ * Check if current page has our custom template. Try to load
+ * template from theme directory and if not exist load it
+ * from root plugin directory.
+ */
+function bookcomplaints_load_plugin_template( $template ) {
+
+    if(  get_page_template_slug() === 'template-custom.php' ) {
+
+        if ( $theme_file = locate_template( array( 'template-custom.php' ) ) ) {
+            $template = $theme_file;
+        } else {
+            $template = plugin_dir_path( __FILE__ ) . 'templates/page-complaints.php';
+        }
+    }
+
+    if($template == '') {
+        throw new \Exception('No template found');
+    }
+
+    return $template;
+}
+
+add_filter( 'template_include', 'bookcomplaints_load_plugin_template' );
