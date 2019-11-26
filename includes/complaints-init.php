@@ -10,14 +10,13 @@ function bookcomplaints_table_create(){
 
     $sql = "CREATE TABLE $table_document(
           id_tipo INT NOT NULL AUTO_INCREMENT,
-          code_tipo VARCHAR (5) NULL ,
           nombre VARCHAR(45) NULL,
           UNIQUE KEY (id_tipo)) $charset_collate;
     ";
 
     $sql.= "CREATE TABLE $table_area(
         id_area INT NOT NULL AUTO_INCREMENT,
-        code_area VARCHAR (5) NULL ,
+        code_area VARCHAR (6) NULL ,
         nombre VARCHAR(45) NULL,
         UNIQUE KEY (id_area)) $charset_collate;
     ";
