@@ -57,7 +57,6 @@ function complaintsForm(){
 
     ?>
 
-    <main id="main" class="site-main" role="main">
         <div class="container">
             <form method="post" id="form-complaints">
                 <div class="form-group row">
@@ -185,7 +184,7 @@ function complaintsForm(){
                 </div>
             </form>
         </div>
-    </main>
+
     <script>
         (function($) {
 
