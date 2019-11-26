@@ -25,21 +25,22 @@ function bookcomplaints_table_create(){
         CREATE TABLE $table_claims(
           id_reclamo INT NOT NULL AUTO_INCREMENT,
           nombres VARCHAR(255) NULL DEFAULT '',
-          tipo_documento INT NOT NULL,
+          tipo_documento VARCHAR(3) NOT NULL ,
           num_documento VARCHAR(45) NULL DEFAULT '',
           email VARCHAR(255) NULL DEFAULT '',
           telefono VARCHAR(45) NULL DEFAULT '',
-          celular VARCHAR(45) NULL DEFAULT '',
           departamento VARCHAR(2) NULL,
           provincia VARCHAR(4)NULL,
           distrito VARCHAR (6) NULL,
           direccion TEXT NULL DEFAULT '',
-          area VARCHAR (5) NOT NULL,
+          area VARCHAR (6) NOT NULL,
           asunto TINYTEXT NULL DEFAULT '',
           descripcion TEXT NULL DEFAULT '',
           medio_respuesta INT NOT NULL,
+          fecha_incidencia DATE NOT NULL DEFAULT '0000-00-00',
           estado INT NOT NULL,
-          fecha datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+          terminos INT NOT NULL,
+          fecha_registro datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
           PRIMARY KEY (id_reclamo)) $charset_collate;
     ";
 

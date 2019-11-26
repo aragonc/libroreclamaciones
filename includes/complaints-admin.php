@@ -204,6 +204,11 @@ function bookcomplaints_panel_area(){
 
 
 function bookcomplaints_panel_content(){
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bc_reclamo';
+
+    $list = $wpdb->get_results("SELECT * FROM " . $table_name . " ORDER BY id_reclamo ASC");
+
     ?>
 
     <div class="wrap">
@@ -224,14 +229,37 @@ function bookcomplaints_panel_content(){
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Usuario'); ?></th>
+                        <th><?php _e('Codigo'); ?></th>
+                        <th><?php _e('Nombres y Apellidos'); ?></th>
                         <th><?php _e('Domicilio'); ?></th>
                         <th><?php _e('Contacto'); ?></th>
-                        <th><?php _e('Reclamo'); ?></th>
+                        <th><?php _e('Asunto'); ?></th>
+                        <th><?php _e('Acciones'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php foreach ( $list as $item ) : ?>
+                    <tr>
+                        <td>
+                            <?php echo $item->id_reclamo; ?>
+                        </td>
+                        <td>
+                            <?php echo $item->nombres; ?>
+                        </td>
+                        <td>
+                            <?php echo $item->direccion; ?>
+                        </td>
+                        <td>
+                            <?php echo $item->email; ?>
+                        </td>
+                        <td>
+                            <?php echo $item->asunto; ?>
+                        </td>
+                        <td>
 
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
 

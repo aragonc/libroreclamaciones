@@ -7,17 +7,59 @@ function getAreasList(){
     return $list;
 }
 
-
 function complaintsForm(){
-
+    global $reg_errors;
+    $reg_errors = new WP_Error;
     $list = getDepartments();
     $areas = getAreasList();
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bc_reclamo';
+    $dateCurrent = date("Y-m-d H:i:s");
+
+    if (isset($_POST['save'])) {
+        $nombre = $_POST['client_name'];
+        $tipo_doc = $_POST['type_doc'];
+        $nro_doc = $_POST['num_doc'];
+        $email = $_POST['client_email'];
+        $phone = $_POST['client_phone'];
+        $direction = $_POST['client_direction'];
+        $departments = $_POST['client_departments'];
+        $provinces = $_POST['client_provinces'];
+        $districts = $_POST['client_districts'];
+        $area = $_POST['client_area'];
+        $request = $_POST['client_request'];
+        $description = $_POST['client_description'];
+        $medio = $_POST['client_answer'];
+        $check = $_POST['client_check'];
+        $incidentDate = $_POST['client_date'];
+
+
+        $wpdb->insert($table_name,[
+               'nombres' => $nombre,
+                'tipo_documento' => $tipo_doc,
+                'num_documento' => $nro_doc,
+                'email' => $email,
+                'telefono' => $phone,
+                'departamento' => $departments,
+                'provincia' => $provinces,
+                'distrito' => $districts,
+                'direccion' => $direction,
+                'area' => $area,
+                'asunto' => $request,
+                'descripcion' => $description,
+                'medio_respuesta' => $medio,
+                'fecha_incidencia' => $incidentDate,
+                'terminos' => $check,
+                'estado' => 1,
+                'fecha_registro' => $dateCurrent
+        ]);
+    }
 
     ?>
 
     <main id="main" class="site-main" role="main">
         <div class="container">
-            <form>
+            <form method="post" id="form-complaints">
                 <div class="form-group row">
                     <label for="client_name" class="col-sm-2 col-form-label">Nombres y apellidos</label>
                     <div class="col-sm-10">
@@ -32,7 +74,7 @@ function complaintsForm(){
                             <option value="DNI">DNI</option>
                             <option value="RUC">RUC</option>
                             <option value="CE">Carnet de extranjeria</option>
-                            <option value="PASS">Pasaporte</option>
+                            <option value="PAS">Pasaporte</option>
                         </select>
                     </div>
                     <label for="num_doc" class="col-sm-2 col-form-label">Número de documento</label>
@@ -107,18 +149,22 @@ function complaintsForm(){
                 </div>
 
                 <div class="form-group row">
+                    <label for="client_date" class="col-sm-2 col-form-label">Fecha de indicencia</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" name="client_date" id="client_date">
+                    </div>
                     <label class="col-sm-2 col-form-label">Medio de respuesta</label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-4">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="client_answer" id="client_answer1" value="option1">
+                            <input class="form-check-input" type="radio" name="client_answer" id="client_answer1" value="1">
                             <label class="form-check-label" for="client_answer1">Correo</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="client_answer" id="client_answer2" value="option2">
+                            <input class="form-check-input" type="radio" name="client_answer" id="client_answer2" value="2">
                             <label class="form-check-label" for="client_answer2">Celular</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="client_answer" id="client_answer3" value="option3" >
+                            <input class="form-check-input" type="radio" name="client_answer" id="client_answer3" value="3" >
                             <label class="form-check-label" for="client_answer3">Telefono</label>
                         </div>
                     </div>
@@ -127,7 +173,7 @@ function complaintsForm(){
                 <div class="form-group row">
                     <div class="col-sm-10 offset-sm-2">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="client_check">
+                            <input class="form-check-input" type="checkbox" value="1" name="client_check" id="client_check">
                             <label class="form-check-label" for="client_check">
                                 Mediante el mensaje enviado manifiesto mi conformidad de solicitud ingresada
                             </label>
@@ -135,13 +181,23 @@ function complaintsForm(){
                     </div>
                 </div>
                 <div class="row justify-content-md-center">
-                    <button type="submit" class="btn btn-primary">Registrar reclamo</button>
+                    <button type="submit" name="save" id="save" class="btn btn-primary" disabled>REGISTRAR RECLAMO</button>
                 </div>
             </form>
         </div>
     </main>
     <script>
         (function($) {
+
+            $('#client_check').click(function(){
+                var save = $('#save');
+                if( $('#client_check').prop('checked') ) {
+                    save.prop('disabled', false);
+                } else {
+                    save.prop('disabled', true);
+                }
+            });
+
             $('#client_departments').click(function(){
                 var provinces = $('#client_provinces');
                 var districts = $('#client_districts');
