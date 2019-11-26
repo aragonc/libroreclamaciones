@@ -53,6 +53,28 @@ function complaintsForm(){
                 'estado' => 1,
                 'fecha_registro' => $dateCurrent
         ]);
+
+        //Main Details.
+        $to = get_option( 'admin_email' );
+        $subject = __( 'Reclamo enviado desde ' ) . get_option( 'blogname' );
+
+        $message = __('Usuario:') . ' ' . $nombre . ' con ' . $tipo_doc . ': ' . $nro_doc . "\n";
+        $message .= __('Email:') . ' ' . $email . "\n";
+        $message .= __('Fecha de incidencia:') . ' ' . $incidentDate . "\n";
+        $message .= __('Comentario:') . " \n\n";
+        $message .= $description;
+
+        $headers = 'From: ' . $nombre . ' <' . $email . '>' . "\r\n";
+
+        // Email para el administrador
+        wp_mail( $to, $subject, $message, $headers );
+
+        // Email para el usuario
+        $message_user = "Estimado $nombre ,\r\n\r\nMuchas gracias por dejarnos su opinión sobre nuestros servicios. Su reclamo ha sido recepcionado correctamente.";
+        $headers = 'From: ' . get_option( 'blogname' ) . ' <informes@grupoexcelencia.org>' . "\r\n";
+
+        wp_mail( $email, __('Hemos recibido su reclamo'), $message_user, $headers );
+        
     }
 
     ?>
