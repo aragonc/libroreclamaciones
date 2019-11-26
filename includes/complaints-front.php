@@ -7,6 +7,25 @@ function getAreasList(){
     return $list;
 }
 
+function getTypeofRequest($id_type){
+    
+    switch($id_type){
+        case 1:
+            $text = 'Reclamo';
+            break;
+        case 2:
+            $text = 'Queja';
+            break;
+        case 3:
+            $text = 'Consulta';
+            break;
+        case 4:
+            $text = 'Sugerencia';
+            break;   
+    }
+    return $text;
+}
+
 function complaintsForm(){
     global $reg_errors;
     $reg_errors = new WP_Error;
@@ -74,7 +93,7 @@ function complaintsForm(){
         $headers = 'From: ' . get_option( 'blogname' ) . ' <informes@grupoexcelencia.org>' . "\r\n";
 
         wp_mail( $email, __('Hemos recibido su reclamo'), $message_user, $headers );
-        
+
     }
 
     ?>
