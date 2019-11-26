@@ -139,6 +139,29 @@ function complaintsForm(){
                         </select>
                     </div>
                 </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><strong>Reclamo:</strong> Disconformidad sobre un producto o servicio prestado por la empresa.</li>
+                                    <li><strong>Consulta:</strong> Duda sobre alguna operación o información sobre los productos o servicios que le brinda
+                                        la empresa.</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>
+                                        <strong>Queja:</strong> Malestar o descontento respecto a la atención en público.
+                                    </li>
+                                    <li>
+                                        <strong>Sugerencia:</strong> Recomendaciones de mejora que nos desean brindar nuestros clientes.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group row">
                     <label for="client_description" class="col-sm-2 col-form-label">Descripción</label>
@@ -180,7 +203,7 @@ function complaintsForm(){
                     </div>
                 </div>
                 <div class="row justify-content-md-center">
-                    <button type="submit" name="save" id="save" class="btn btn-primary" disabled>REGISTRAR RECLAMO</button>
+                    <button type="submit" name="save" id="save" class="btn btn-primary" disabled>REGISTRAR</button>
                 </div>
             </form>
         </div>
