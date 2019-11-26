@@ -253,7 +253,7 @@ function bookcomplaints_panel_content(){
                             <?php echo $item->email; ?>
                         </td>
                         <td>
-                            <?php echo $item->asunto; ?>
+                            <?php echo getTypeofRequest($item->asunto);  ?>
                         </td>
                         <td>
 

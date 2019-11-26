@@ -75,7 +75,7 @@ function complaintsForm(){
 
         //Main Details.
         $to = get_option( 'admin_email' );
-        $subject = __( 'Reclamo enviado desde ' ) . get_option( 'blogname' );
+        $subject =  getTypeofRequest($request) .__( ' enviado desde ' ) . get_option( 'blogname' );
 
         $message = __('Usuario:') . ' ' . $nombre . ' con ' . $tipo_doc . ': ' . $nro_doc . "\n";
         $message .= __('Email:') . ' ' . $email . "\n";
