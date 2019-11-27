@@ -173,8 +173,8 @@ function bookcomplaints_panel_area(){
                             <span id="area_name_<?php echo $item->id_area; ?>" data-name="<?php echo $item->nombre; ?>"><?php echo $item->nombre; ?></span>
                         </td>
                         <td>
-                            <a href="<?php echo $urlCurrent; ?>&action=delete&idarea=<?php echo $item->id_area; ?>">Eliminar</a> |
-                            <a href="#" class="modify" data-id="<?php echo $item->id_area; ?>" href="#">Modificar</a>
+                            <a href="#" class="modify" data-id="<?php echo $item->id_area; ?>" href="#">Modificar</a> |
+                            <a onclick="javascript: if (!confirm('Por favor, confirme su elección')) return false;" href="<?php echo $urlCurrent; ?>&action=delete&idarea=<?php echo $item->id_area; ?>">Eliminar</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -208,6 +208,17 @@ function bookcomplaints_panel_content(){
     $table_name = $wpdb->prefix . 'bc_reclamo';
 
     $list = $wpdb->get_results("SELECT * FROM " . $table_name . " ORDER BY id_reclamo ASC");
+    $urlCurrent = esc_url( $_SERVER['REQUEST_URI'] );
+
+    //Eliminar registro
+
+    if (isset($_GET['action']) && isset($_GET['id_complaints'])) {
+        $action = $_GET['action'];
+        $idComplaints = $_GET['id_complaints'];
+        if ($action){
+            $wpdb->delete($table_name, [ 'id_reclamo' => $idComplaints ]);
+        }
+    }
 
     ?>
 
@@ -215,12 +226,6 @@ function bookcomplaints_panel_content(){
         <h2><?php _e('Libro de Reclamaciones'); ?></h2>
     <div id="pw_warp">
         <div class="panel-content">
-            <div id="message-append">
-                <div id="top-message" class="updated saved">
-                    <p><?php printf( __('Copie y pegue el siguiente %1s en cualquier página donde quiera que aparezca el formulario de reclamaciones: %2s'), '<strong>shortcode</strong>', '<code>[formulario-reclamaciones]</code>' ); ?></p>
-                </div>
-            </div>
-
             <h3 class="title"><?php _e('Reclamos guardados'); ?></h3>
             <p><?php _e('A continuación de mostrará una lista de reclamos, desde el más reciente a los más antiguos.'); ?></p>
         </div>
@@ -229,10 +234,12 @@ function bookcomplaints_panel_content(){
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th><?php _e('Codigo'); ?></th>
-                        <th><?php _e('Nombres y Apellidos'); ?></th>
+                        <th style="width: 7%"><?php _e('Codigo'); ?></th>
+                        <th style="width: 18%;"><?php _e('Nombres y Apellidos'); ?></th>
+                        <th><?php _e('Documento Identidad'); ?></th>
                         <th><?php _e('Domicilio'); ?></th>
-                        <th><?php _e('Contacto'); ?></th>
+                        <th><?php _e('Email'); ?></th>
+                        <th><?php _e('Celular/Wathsapp'); ?></th>
                         <th><?php _e('Asunto'); ?></th>
                         <th><?php _e('Acciones'); ?></th>
                     </tr>
@@ -247,16 +254,24 @@ function bookcomplaints_panel_content(){
                             <?php echo $item->nombres; ?>
                         </td>
                         <td>
+                            <?php echo  $item->tipo_documento; ?>
+                            <?php echo  $item->num_documento; ?>
+                        </td>
+                        <td>
                             <?php echo $item->direccion; ?>
                         </td>
                         <td>
                             <?php echo $item->email; ?>
                         </td>
                         <td>
+                            <?php echo $item->telefono; ?>
+                        </td>
+                        <td>
                             <?php echo getTypeofRequest($item->asunto);  ?>
                         </td>
                         <td>
-
+                            <a href="#">Ver</a> |
+                            <a onclick="javascript: if (!confirm('Por favor, confirme su elección')) return false;" href="<?php echo $urlCurrent; ?>&action=delete&id_complaints=<?php echo $item->id_reclamo; ?>">Eliminar</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
