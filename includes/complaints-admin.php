@@ -204,8 +204,11 @@ function bookcomplaints_panel_area(){
 
 
 function bookcomplaints_panel_content(){
+    wp_enqueue_script( 'jquery-ui-dialog' ); // jquery and jquery-ui should be dependencies, didn't check though...
+    wp_enqueue_style( 'wp-jquery-ui-dialog' );
     global $wpdb;
     $table_name = $wpdb->prefix . 'bc_reclamo';
+    $siteURL = get_site_url().'/wp-admin/admin.php?page=complaints_options';
 
     $list = $wpdb->get_results("SELECT * FROM " . $table_name . " ORDER BY id_reclamo ASC");
     $urlCurrent = esc_url( $_SERVER['REQUEST_URI'] );
@@ -216,8 +219,12 @@ function bookcomplaints_panel_content(){
         $action = $_GET['action'];
         $idComplaints = $_GET['id_complaints'];
         if ($action){
-            $wpdb->delete($table_name, [ 'id_reclamo' => $idComplaints ]);
+            $result = $wpdb->delete($table_name, [ 'id_reclamo' => $idComplaints ]);
+            if($result) {
+                header('Location: '.$siteURL);
+            }
         }
+
     }
 
     ?>
