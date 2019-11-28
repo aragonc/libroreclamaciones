@@ -7,8 +7,41 @@ function getAreasList(){
     return $list;
 }
 
+function getUbigeo($id_districts){
+    $text = null;
+    $urlJSONDistricts = file_get_contents(plugin_dir_url( __DIR__ )."ubigeo/json/districts.json");
+    $urlJSONProvinces = file_get_contents(plugin_dir_url( __DIR__ )."ubigeo/json/provinces.json");
+    $urlJSONDepartments = file_get_contents(plugin_dir_url( __DIR__ )."ubigeo/json/departments.json");
+    $districts = json_decode($urlJSONDistricts);
+    $provinces = json_decode($urlJSONProvinces);
+    $departments = json_decode($urlJSONDepartments);
+
+    foreach ($districts as $district){
+        if($district->id == $id_districts){
+
+            $text.= $district->name;
+
+            foreach ($provinces as $province){
+                if($province->id == $district->province_id){
+
+                    $text.= ', '.$province->name;
+
+                    foreach ($departments as $department){
+                        if($department->id == $district->department_id){
+
+                            $text.= ' - '.$department->name;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return $text;
+}
+
 function getTypeofRequest($id_type){
-    
+    $text = null;
     switch($id_type){
         case 1:
             $text = 'Reclamo';
@@ -25,6 +58,23 @@ function getTypeofRequest($id_type){
     }
     return $text;
 }
+
+function getTypeMedium($id_type){
+    $text = null;
+    switch($id_type){
+        case 1:
+            $text = 'Correo';
+            break;
+        case 2:
+            $text = 'Celular';
+            break;
+        case 3:
+            $text = 'Teléfono';
+            break;
+    }
+    return $text;
+}
+
 
 function complaintsForm(){
     global $reg_errors;
@@ -79,9 +129,13 @@ function complaintsForm(){
 
         $message = __('Usuario:') . ' ' . $nombre . ' con ' . $tipo_doc . ': ' . $nro_doc . "\n";
         $message .= __('Email:') . ' ' . $email . "\n";
+        $message .= __('Dirección:').' '. $direction . "\n";
+        $message .= __('Distrito/Pronvincia/Región:').' '. getUbigeo($districts) . "\n";
+        $message .= __('Aréa/Code:').' '. $area . "\n";
         $message .= __('Fecha de incidencia:') . ' ' . $incidentDate . "\n";
         $message .= __('Comentario:') . " \n\n";
         $message .= $description;
+        $message .= __('Medio de respuesta:'). ' ' . getTypeMedium($medio);
 
         $headers = 'From: ' . $nombre . ' <' . $email . '>' . "\r\n";
 
@@ -228,7 +282,7 @@ function complaintsForm(){
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="client_answer" id="client_answer3" value="3" >
-                            <label class="form-check-label" for="client_answer3">Telefono</label>
+                            <label class="form-check-label" for="client_answer3">Teléfono</label>
                         </div>
                     </div>
                 </div>

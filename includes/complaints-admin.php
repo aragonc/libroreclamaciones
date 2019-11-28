@@ -27,6 +27,8 @@ function bookcomplaints_panel_menu(){
         'bookcomplaints_panel_area'
     );
 
+
+
     // Add menu link to the admin bar
     function bookcomplaints_add_admin_menu() {
         global $wp_admin_bar;
@@ -49,18 +51,27 @@ function getAreaName($id){
     return $name[0];
 }
 
+function getAreaNameCode($code){
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'bc_area';
+    $name = $wpdb->get_results("SELECT nombre FROM " . $table_name . " WHERE code_area = '".$code."'");
+    return $name[0];
+}
+
 function bookcomplaints_panel_area(){
     global $reg_errors;
     $reg_errors = new WP_Error;
     global $wpdb;
     $table_name = $wpdb->prefix . 'bc_area';
     $name = null;
+    $siteURL = get_site_url().'/wp-admin/admin.php?page=areas_complaints';
 
     if (isset($_GET['action']) && isset($_GET['idarea'])) {
         $action = $_GET['action'];
         $idArea = $_GET['idarea'];
         if ($action){
             $wpdb->delete($table_name, [ 'id_area' => $idArea ]);
+            echo "<script>location.replace('".$siteURL."');</script>";
         }
     }
 
@@ -221,7 +232,7 @@ function bookcomplaints_panel_content(){
         if ($action){
             $result = $wpdb->delete($table_name, [ 'id_reclamo' => $idComplaints ]);
             if($result) {
-                header('Location: '.$siteURL);
+                echo "<script>location.replace('".$siteURL."');</script>";
             }
         }
 
@@ -242,11 +253,12 @@ function bookcomplaints_panel_content(){
                 <thead>
                     <tr>
                         <th style="width: 7%"><?php _e('Codigo'); ?></th>
-                        <th style="width: 18%;"><?php _e('Nombres y Apellidos'); ?></th>
+                        <th style="width: 10%;"><?php _e('Nombres y Apellidos'); ?></th>
                         <th><?php _e('Documento Identidad'); ?></th>
-                        <th><?php _e('Domicilio'); ?></th>
+                        <th style="width: 18%;"><?php _e('Domicilio'); ?></th>
                         <th><?php _e('Email'); ?></th>
                         <th><?php _e('Celular/Wathsapp'); ?></th>
+                        <th><?php _e('Área/Code'); ?></th>
                         <th><?php _e('Asunto'); ?></th>
                         <th><?php _e('Acciones'); ?></th>
                     </tr>
@@ -265,7 +277,10 @@ function bookcomplaints_panel_content(){
                             <?php echo  $item->num_documento; ?>
                         </td>
                         <td>
-                            <?php echo $item->direccion; ?>
+                            <?php
+                                echo $item->direccion.'<br>';
+                                echo '<strong>'.getUbigeo($item->distrito).'</strong>';
+                            ?>
                         </td>
                         <td>
                             <?php echo $item->email; ?>
@@ -274,10 +289,13 @@ function bookcomplaints_panel_content(){
                             <?php echo $item->telefono; ?>
                         </td>
                         <td>
+                            <?php echo $item->area; ?>
+                        </td>
+                        <td>
                             <?php echo getTypeofRequest($item->asunto);  ?>
                         </td>
                         <td>
-                            <a href="#">Ver</a> |
+                            <!--<a href="#">Ver</a> |-->
                             <a onclick="javascript: if (!confirm('Por favor, confirme su elección')) return false;" href="<?php echo $urlCurrent; ?>&action=delete&id_complaints=<?php echo $item->id_reclamo; ?>">Eliminar</a>
                         </td>
                     </tr>
