@@ -324,8 +324,8 @@ function bookcomplaints_panel_content(){
                         <th style="width: 10%;"><?php _e('Nombres y Apellidos'); ?></th>
                         <th><?php _e('Documento Identidad'); ?></th>
                         <th style="width: 18%;"><?php _e('Domicilio'); ?></th>
-                        <th><?php _e('Email'); ?></th>
-                        <th><?php _e('Celular/Wathsapp'); ?></th>
+                        <th><?php _e('Referencias de contacto'); ?></th>
+                        <th><?php _e('Modo de respuesta'); ?></th>
                         <th><?php _e('Área/Code'); ?></th>
                         <th><?php _e('Asunto'); ?></th>
                         <th><?php _e('Acciones'); ?></th>
@@ -364,10 +364,11 @@ function bookcomplaints_panel_content(){
                             ?>
                         </td>
                         <td>
-                            <?php echo $item->email; ?>
+                            <?php echo '<strong>Email: </strong>'.$item->email; ?>
+                            <?php echo '<strong>Celular/Teléfono: </strong>'. $item->telefono; ?>
                         </td>
                         <td>
-                            <?php echo $item->telefono; ?>
+                            <?php echo getTypeMedium($item->medio_respuesta); ?>
                         </td>
                         <td>
                             <?php echo $item->area; ?>
