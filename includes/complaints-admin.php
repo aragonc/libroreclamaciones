@@ -23,10 +23,18 @@ function bookcomplaints_panel_menu(){
         __('Áreas de reclamos'),
         __('Áreas'),
         'activate_plugins',
-        'areas_complaints',
+        'export_complaints',
         'bookcomplaints_panel_area'
     );
 
+    add_submenu_page(
+        'complaints_options',
+        __('Exportar registros de reclamos'),
+        __('Exportar registros'),
+        'activate_plugins',
+        'areas_complaints',
+        'bookcomplaints_panel_export'
+    );
 
 
     // Add menu link to the admin bar
@@ -129,7 +137,7 @@ function bookcomplaints_panel_area(){
                 <tbody>
                     <tr class="form-field form-required">
                         <th>
-                            <label>Nombre del área</label>
+                            <label for="namearea">Nombre del área</label>
                         </th>
                         <th>
                             <input name="area" type="text" id="namearea"  value="">
@@ -137,7 +145,7 @@ function bookcomplaints_panel_area(){
                     </tr>
                     <tr class="form-field form-required">
                         <th>
-                            <label>Código corto</label>
+                            <label for="code_short">Código corto</label>
                         </th>
                         <th>
                             <input name="code_short" type="text" id="code_short"  value="">
@@ -213,15 +221,60 @@ function bookcomplaints_panel_area(){
     <?php
 }
 
+function bookcomplaints_panel_export(){
+    ?>
+
+    <div class="wrap">
+        <h2><?php _e('Exportar registros de reclamos'); ?></h2>
+        <p>Introduce la fecha de inicio y fin para exportar los registros en formato Excel</p>
+        <form method="post" id="add-complaints" class="validate" >
+            <?php
+            settings_fields( '' );
+            ?>
+            <table class="form-table" style="width: 400px;">
+                <tbody>
+                <tr class="form-field form-required">
+                    <th>
+                        <label for="date_start">Fecha inicial</label>
+                    </th>
+                    <th>
+                        <input name="date_start" type="date" id="date_start"  value="">
+                    </th>
+                </tr>
+                <tr class="form-field form-required">
+                    <th>
+                        <label for="date_end">Fecha final</label>
+                    </th>
+                    <th>
+                        <input name="date_end" type="date" id="date_end"  value="">
+                    </th>
+                </tr>
+                </tbody>
+            </table>
+
+            <?php
+
+            submit_button('Exportar reclamos', 'primary', 'export', false);
+
+            ?>
+        </form>
+    </div>
+
+    <?php
+}
 
 function bookcomplaints_panel_content(){
     wp_enqueue_script( 'jquery-ui-dialog' ); // jquery and jquery-ui should be dependencies, didn't check though...
     wp_enqueue_style( 'wp-jquery-ui-dialog' );
+
     global $wpdb;
     $table_name = $wpdb->prefix . 'bc_reclamo';
     $siteURL = get_site_url().'/wp-admin/admin.php?page=complaints_options';
+    $urlPlugin = plugin_dir_url( __DIR__ );
 
-    $list = $wpdb->get_results("SELECT * FROM " . $table_name . " ORDER BY id_reclamo ASC");
+    wp_enqueue_script('complaints-js', $urlPlugin.'js/complaints.js');
+
+    $list = $wpdb->get_results("SELECT * FROM " . $table_name . " ORDER BY id_reclamo DESC");
     $urlCurrent = esc_url( $_SERVER['REQUEST_URI'] );
 
     //Eliminar registro
@@ -229,13 +282,27 @@ function bookcomplaints_panel_content(){
     if (isset($_GET['action']) && isset($_GET['id_complaints'])) {
         $action = $_GET['action'];
         $idComplaints = $_GET['id_complaints'];
-        if ($action){
-            $result = $wpdb->delete($table_name, [ 'id_reclamo' => $idComplaints ]);
-            if($result) {
-                echo "<script>location.replace('".$siteURL."');</script>";
-            }
+        $result = null;
+        switch ($action){
+            case 'delete':
+                $result = $wpdb->delete($table_name, [ 'id_reclamo' => $idComplaints ]);
+                break;
+            case 'change_status_check':
+                $result = $wpdb->update($table_name,
+                    ['estado' => 2],
+                    ['id_reclamo' => $idComplaints]
+                );
+            case 'change_status_deny':
+                $result = $wpdb->update($table_name,
+                    ['estado' => 1],
+                    ['id_reclamo' => $idComplaints]
+                );
+                break;
         }
 
+        if($result) {
+            echo "<script>location.replace('".$siteURL."');</script>";
+        }
     }
 
     ?>
@@ -264,7 +331,20 @@ function bookcomplaints_panel_content(){
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ( $list as $item ) : ?>
+                    <?php
+                    $imageCheck = '<img width="22px" src="'.$urlPlugin.'images/check.svg'.'"/>';
+                    $imageForbidden = '<img width="22px" src="'.$urlPlugin.'images/forbidden.svg'.'"/>';
+                    $link = null;
+                    $dialog = null;
+                    foreach ( $list as $item ) :
+                        if($item->estado == '1'){
+                            $link = '<a title="Cambiar estado de atención" href="'.$urlCurrent.'&action=change_status_check&id_complaints='.$item->id_reclamo.'">'.$imageForbidden.'</a>';
+                        } else {
+                            $link = '<a title="Cambiar estado de atención" href="'.$urlCurrent.'&action=change_status_deny&id_complaints='.$item->id_reclamo.'">'.$imageCheck.'</a>';
+                        }
+                        $title = getTypeofRequest($item->asunto);
+                        $dialog = '<div class="dialog" id="dialog_'.$item->id_reclamo.'" title="'.$title.'">'.$item->descripcion.'</div>';
+                    ?>
                     <tr>
                         <td>
                             <?php echo $item->id_reclamo; ?>
@@ -292,11 +372,15 @@ function bookcomplaints_panel_content(){
                             <?php echo $item->area; ?>
                         </td>
                         <td>
-                            <?php echo getTypeofRequest($item->asunto);  ?>
+                            <?php echo $title . $dialog ;  ?>
                         </td>
                         <td>
-                            <!--<a href="#">Ver</a> |-->
-                            <a onclick="javascript: if (!confirm('Por favor, confirme su elección')) return false;" href="<?php echo $urlCurrent; ?>&action=delete&id_complaints=<?php echo $item->id_reclamo; ?>">Eliminar</a>
+                            <a class="open_view" data-id="<?php echo $item->id_reclamo; ?>" title="Ver contenido de mensaje" href="#"><img width="24px" src="<?php echo $urlPlugin.'images/information.svg'; ?>" /></a>
+                            <?php echo $link; ?>
+                            <a title="Eliminar registro" onclick="javascript: if (!confirm('Por favor, confirme su elección')) return false;"
+                               href="<?php echo $urlCurrent; ?>&action=delete&id_complaints=<?php echo $item->id_reclamo; ?>">
+                                <img width="22px" src="<?php echo $urlPlugin.'images/trash.svg'; ?>">
+                            </a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
