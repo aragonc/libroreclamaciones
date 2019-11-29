@@ -103,7 +103,7 @@ function complaintsForm(){
         $incidentDate = $_POST['client_date'];
 
 
-        $wpdb->insert($table_name,[
+        $result = $wpdb->insert($table_name,[
                'nombres' => $nombre,
                 'tipo_documento' => $tipo_doc,
                 'num_documento' => $nro_doc,
@@ -123,6 +123,8 @@ function complaintsForm(){
                 'fecha_registro' => $dateCurrent
         ]);
 
+        $typeMedio = getTypeMedium($medio);
+        $ubication = getUbigeo($districts);
         //Main Details.
         $to = get_option( 'admin_email' );
         $subject =  getTypeofRequest($request) .__( ' enviado desde ' ) . get_option( 'blogname' );
@@ -130,12 +132,12 @@ function complaintsForm(){
         $message = __('Usuario:') . ' ' . $nombre . ' con ' . $tipo_doc . ': ' . $nro_doc . "\n";
         $message .= __('Email:') . ' ' . $email . "\n";
         $message .= __('Dirección:').' '. $direction . "\n";
-        $message .= __('Distrito/Pronvincia/Región:').' '. getUbigeo($districts) . "\n";
+        $message .= __('Distrito/Pronvincia/Región:').' '. $ubication . "\n";
         $message .= __('Aréa/Code:').' '. $area . "\n";
         $message .= __('Fecha de incidencia:') . ' ' . $incidentDate . "\n";
         $message .= __('Comentario:') . " \n\n";
         $message .= $description;
-        $message .= __('Medio de respuesta:'). ' ' . getTypeMedium($medio);
+        $message .= __('Medio de respuesta:'). ' ' . $typeMedio;
 
         $headers = 'From: ' . $nombre . ' <' . $email . '>' . "\r\n";
 
