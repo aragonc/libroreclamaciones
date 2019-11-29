@@ -131,13 +131,15 @@ function complaintsForm(){
 
         $message = __('Usuario:') . ' ' . $nombre . ' con ' . $tipo_doc . ': ' . $nro_doc . "\n";
         $message .= __('Email:') . ' ' . $email . "\n";
+        $message .= __('Celular o Teléfono:') . ' ' . $phone . "\n";
         $message .= __('Dirección:').' '. $direction . "\n";
         $message .= __('Distrito/Pronvincia/Región:').' '. $ubication . "\n";
         $message .= __('Aréa/Code:').' '. $area . "\n";
+        $message .= __('Tipo de solicitud:').' '. getTypeofRequest($request) . "\n";
         $message .= __('Fecha de incidencia:') . ' ' . $incidentDate . "\n";
+        $message .= __('Medio de respuesta:'). ' ' . $typeMedio;
         $message .= __('Comentario:') . " \n\n";
         $message .= $description;
-        $message .= __('Medio de respuesta:'). ' ' . $typeMedio;
 
         $headers = 'From: ' . $nombre . ' <' . $email . '>' . "\r\n";
 
