@@ -320,11 +320,11 @@ function bookcomplaints_panel_content(){
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th style="width: 7%"><?php _e('Codigo'); ?></th>
+                        <th style="width: 4%"><?php _e('#'); ?></th>
                         <th style="width: 10%;"><?php _e('Nombres y Apellidos'); ?></th>
                         <th><?php _e('Documento Identidad'); ?></th>
                         <th style="width: 18%;"><?php _e('Domicilio'); ?></th>
-                        <th><?php _e('Referencias de contacto'); ?></th>
+                        <th style="width: 23%;"><?php _e('Referencias de contacto'); ?></th>
                         <th><?php _e('Modo de respuesta'); ?></th>
                         <th><?php _e('Área/Code'); ?></th>
                         <th><?php _e('Asunto'); ?></th>
