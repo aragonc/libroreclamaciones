@@ -13,7 +13,12 @@
             }
         });
     $('.open_view').click(function(){
-        var dialogID = $(this).attr('data-id');
-        $( "#dialog_"+dialogID ).dialog( "open");
+        var rowID = $(this).attr('data-id');
+        var dialogRow = $( "#dialog_" + rowID );
+        $("#row_" + rowID).css("background-color", "#fff9c7");
+        dialogRow.dialog( "open");
+        dialogRow.on( "dialogbeforeclose", function() {
+            $("#row_" + rowID).css("background-color", "");
+        } );
     });
 })( jQuery );

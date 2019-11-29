@@ -345,7 +345,7 @@ function bookcomplaints_panel_content(){
                         $title = getTypeofRequest($item->asunto);
                         $dialog = '<div class="dialog" id="dialog_'.$item->id_reclamo.'" title="'.$title.'">'.$item->descripcion.'</div>';
                     ?>
-                    <tr>
+                    <tr id="row_<?php echo $item->id_reclamo; ?>">
                         <td>
                             <?php echo $item->id_reclamo; ?>
                         </td>
