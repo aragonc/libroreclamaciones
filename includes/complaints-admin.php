@@ -292,6 +292,7 @@ function bookcomplaints_panel_content(){
                     ['estado' => 2],
                     ['id_reclamo' => $idComplaints]
                 );
+                break;
             case 'change_status_deny':
                 $result = $wpdb->update($table_name,
                     ['estado' => 1],
