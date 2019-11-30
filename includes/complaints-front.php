@@ -152,6 +152,11 @@ function complaintsForm(){
 
         wp_mail( $email, __('Hemos recibido su reclamo'), $message_user, $headers );
 
+        if($result){
+            $alert = '<div class="alert alert-primary" role="alert">'.__('Gracias por registrar su mensaje, se le envió un correo de confirmación, favor de revisar su bandeja de entrada o spam y no olvides agregarnos a tus contactos.').'</div>';
+            echo $alert;
+        }
+
     }
 
     ?>
