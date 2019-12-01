@@ -227,7 +227,7 @@ function bookcomplaints_panel_export(){
     <div class="wrap">
         <h2><?php _e('Exportar registros de reclamos'); ?></h2>
         <p>Introduce la fecha de inicio y fin para exportar los registros en formato Excel</p>
-        <form method="post" id="add-complaints" class="validate" >
+        <form method="post" id="add-complaints" action="<?php echo plugins_url( 'export_data.php', __FILE__ ); ?>" class="validate" >
             <?php
             settings_fields( '' );
             ?>
